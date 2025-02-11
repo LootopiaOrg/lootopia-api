@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: lootopia-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_name
+    username: username
+    password: pwd
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: server_email_address
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
