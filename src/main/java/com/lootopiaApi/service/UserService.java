@@ -3,7 +3,7 @@ package com.lootopiaApi.service;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
 import com.lootopiaApi.model.MfaTokenData;
-import com.lootopiaApi.model.User;
+import com.lootopiaApi.model.entity.User;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 

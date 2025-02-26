@@ -1,4 +1,4 @@
-package com.lootopiaApi.security;
+package com.lootopiaApi.exception;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

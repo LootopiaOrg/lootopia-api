@@ -1,9 +1,9 @@
 package com.lootopiaApi.controller;
 
 import com.lootopiaApi.exception.InvalidTokenException;
-import com.lootopiaApi.exception.MFAServerAppException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
 import com.lootopiaApi.model.*;
+import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.service.JWTService;
 import com.lootopiaApi.service.UserService;
 import dev.samstevens.totp.exceptions.QrGenerationException;

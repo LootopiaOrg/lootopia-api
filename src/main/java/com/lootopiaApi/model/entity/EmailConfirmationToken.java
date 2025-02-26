@@ -1,4 +1,4 @@
-package com.lootopiaApi.model;
+package com.lootopiaApi.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

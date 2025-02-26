@@ -1,6 +1,6 @@
 package com.lootopiaApi.repository;
 
-import com.lootopiaApi.model.EmailConfirmationToken;
+import com.lootopiaApi.model.entity.EmailConfirmationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
