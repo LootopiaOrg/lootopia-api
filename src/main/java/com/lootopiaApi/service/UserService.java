@@ -14,4 +14,7 @@ public interface UserService {
 
     void sendRegistrationConfirmationEmail(final User user) throws MessagingException;
     boolean verifyUser(final String token) throws InvalidTokenException;
+
+    void initiatePasswordReset(String email) throws MessagingException;
+    boolean resetPassword(String token, String newPassword);
 }
