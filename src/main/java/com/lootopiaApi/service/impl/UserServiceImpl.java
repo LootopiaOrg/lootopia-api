@@ -4,6 +4,9 @@ import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.MFAServerAppException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
 import com.lootopiaApi.model.*;
+import com.lootopiaApi.model.entity.EmailConfirmationToken;
+import com.lootopiaApi.model.entity.Role;
+import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.EmailConfirmationTokenRepository;
 import com.lootopiaApi.repository.RoleRepository;
 import com.lootopiaApi.repository.UserRepository;
@@ -87,10 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean verifyTotp(String code, String username) {
         User user = userRepository.findByUsername(username).get();
-        System.out.println("Code reçu: " + code);
-        System.out.println("Clé secrète: " + user.getSecretKey());
         boolean isValid = totpManager.verifyTotp(code, user.getSecretKey());
-        System.out.println("Résultat de la vérification: " + isValid);
         return isValid;
     }
 

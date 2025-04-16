@@ -1,6 +1,6 @@
-package com.lootopiaApi.provider;
+package com.lootopiaApi.security;
 
-import com.lootopiaApi.model.User;
+import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

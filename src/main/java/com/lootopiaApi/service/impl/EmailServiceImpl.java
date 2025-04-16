@@ -1,6 +1,6 @@
 package com.lootopiaApi.service.impl;
 
-import com.lootopiaApi.model.EmailConfirmationToken;
+import com.lootopiaApi.model.entity.EmailConfirmationToken;
 import com.lootopiaApi.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

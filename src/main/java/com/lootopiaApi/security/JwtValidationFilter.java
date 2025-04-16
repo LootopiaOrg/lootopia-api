@@ -1,4 +1,4 @@
-package com.lootopiaApi.filter;
+package com.lootopiaApi.security;
 
 import com.lootopiaApi.service.JWTService;
 import jakarta.servlet.FilterChain;
