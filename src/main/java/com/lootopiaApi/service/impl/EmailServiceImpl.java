@@ -39,6 +39,29 @@ public class EmailServiceImpl implements EmailService {
         sender.send(message);
     }
 
+    @Override
+    public void sendResetEmail(String email, String firstName, String token) throws MessagingException {
+        String resetUrl = "http://localhost:4200/reset-password?token=" + token;
+        String body = "Click here to reset your password: " + resetUrl;
+
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(email);
+        helper.setSubject("Password reset request - " + email);
+        helper.setText("<html>" +
+                        "<body>" +
+                        "<h2>Dear " + firstName + ",</h2>"
+                        + "<br/>Click here to reset your password: "
+                        + "<br/> "  + resetUrl +"" +
+                        "<br/> Regards,<br/>" +
+                        "</body>" +
+                        "</html>"
+                , true);
+
+        sender.send(message);
+    }
+
+
     private String generateConfirmationLink(String token){
         return "<a href=http://localhost:8080/confirm-email?token="+token+">Confirm Email</a>";
     }

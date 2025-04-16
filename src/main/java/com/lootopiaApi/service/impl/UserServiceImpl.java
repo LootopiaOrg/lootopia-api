@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -122,4 +123,32 @@ public class UserServiceImpl implements UserService {
         emailConfirmationTokenRepository.delete(emailConfirmationToken);
         return true;
     }
+
+    public void initiatePasswordReset(String email) throws MessagingException {
+        User user = userRepository.findByUsername(email).get();
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(30));
+        userRepository.save(user);
+
+        emailService.sendResetEmail(user.getUsername(), user.getFirstName(), token);
+    }
+
+    public boolean resetPassword(String token, String newPassword) {
+        User user = userRepository.findByResetToken(token);
+        if (user == null || user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+        return true;
+    }
+
 }

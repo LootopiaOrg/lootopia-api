@@ -108,4 +108,40 @@ public class AuthController {
             return ResponseEntity.ok("Link expired or token already verified.");
         }
     }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+        try {
+            userService.initiatePasswordReset(email);
+            return ResponseEntity.ok(
+                    new ApiResponse("Password reset link has been sent to your email.", "success")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new ApiResponse("Error: " + e.getMessage(), "error")
+            );
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest resetRequest) {
+        try {
+            boolean success = userService.resetPassword(resetRequest.getToken(), resetRequest.getNewPassword());
+            if (success) {
+                return ResponseEntity.ok(
+                        new ApiResponse("Password has been reset successfully.", "success")
+                );
+            } else {
+                return ResponseEntity.badRequest().body(
+                        new ApiResponse("Invalid or expired token.", "error")
+                );
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new ApiResponse("Error: " + e.getMessage(), "error")
+            );
+        }
+    }
+
 }
