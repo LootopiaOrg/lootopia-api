@@ -42,8 +42,6 @@ public class UserServiceImpl implements UserService {
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
     private static final Charset US_ASCII = Charset.forName("US-ASCII");
 
-    private final TimeProvider timeProvider;
-
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, TotpManager totpManager, EmailService emailService, EmailConfirmationTokenRepository emailConfirmationTokenRepository, TimeProvider timeProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -51,7 +49,6 @@ public class UserServiceImpl implements UserService {
         this.totpManager = totpManager;
         this.emailService = emailService;
         this.emailConfirmationTokenRepository = emailConfirmationTokenRepository;
-        this.timeProvider = timeProvider;
     }
 
     @Override

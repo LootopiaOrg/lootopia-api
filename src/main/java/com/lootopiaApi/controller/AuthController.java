@@ -53,15 +53,26 @@ public class AuthController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User) authentication.getPrincipal();
-            return ResponseEntity.ok(MfaVerificationResponse.builder()
-                    .username(loginRequest.getUsername())
-                    .tokenValid(Boolean.TRUE)
-                    .authValid(Boolean.TRUE)
-                    .mfaRequired(Boolean.TRUE)
-                    .message("User Authenticated using username and Password")
-                    .jwt("")
-                    .build());
 
+            if (user.isMfaEnabled()){
+                return ResponseEntity.ok(MfaVerificationResponse.builder()
+                        .username(loginRequest.getUsername())
+                        .tokenValid(Boolean.TRUE)
+                        .authValid(Boolean.TRUE)
+                        .mfaRequired(Boolean.TRUE)
+                        .message("User Authenticated using username and Password")
+                        .jwt("")
+                        .build());
+            } else {
+                return ResponseEntity.ok(MfaVerificationResponse.builder()
+                        .username(user.getUsername())
+                        .authValid(true)
+                        .tokenValid(true)
+                        .mfaRequired(false)
+                        .message("Authentication successful.")
+                        .jwt(jwtService.generateJwt(user.getUsername()))
+                        .build());
+            }
         } catch (Exception e){
             return ResponseEntity.ok(MfaVerificationResponse.builder()
                     .username(loginRequest.getUsername())
