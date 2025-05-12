@@ -7,6 +7,7 @@ import com.lootopiaApi.model.*;
 import com.lootopiaApi.model.entity.EmailConfirmationToken;
 import com.lootopiaApi.model.entity.Role;
 import com.lootopiaApi.model.entity.User;
+import com.lootopiaApi.model.enums.ERole;
 import com.lootopiaApi.repository.EmailConfirmationTokenRepository;
 import com.lootopiaApi.repository.RoleRepository;
 import com.lootopiaApi.repository.UserRepository;
@@ -17,12 +18,15 @@ import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.time.TimeProvider;
 import jakarta.mail.MessagingException;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -42,7 +46,7 @@ public class UserServiceImpl implements UserService {
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
     private static final Charset US_ASCII = Charset.forName("US-ASCII");
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, TotpManager totpManager, EmailService emailService, EmailConfirmationTokenRepository emailConfirmationTokenRepository, TimeProvider timeProvider) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, TotpManager totpManager, EmailService emailService, EmailConfirmationTokenRepository emailConfirmationTokenRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -88,8 +92,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean verifyTotp(String code, String username) {
         User user = userRepository.findByUsername(username).get();
-        boolean isValid = totpManager.verifyTotp(code, user.getSecretKey());
-        return isValid;
+        return totpManager.verifyTotp(code, user.getSecretKey());
     }
 
     @Override
@@ -148,4 +151,22 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+        return (User) authentication.getPrincipal();
+    }
+
+    boolean isPartner() {
+        return getAuthenticatedUser().getRoles().stream()
+                .anyMatch(role -> role.getRole().name().equals("PARTNER"));
+    }
+
+    @Override
+    public void assertIsPartner() throws AccessDeniedException {
+        if (!isPartner()) {
+            throw new AccessDeniedException("Access denied: Only partners can perform this action.");
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package com.lootopiaApi.model.entity;
 
-import com.lootopiaApi.model.ERole;
+import com.lootopiaApi.model.enums.ERole;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.HashSet;
