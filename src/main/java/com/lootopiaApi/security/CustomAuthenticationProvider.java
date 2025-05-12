@@ -33,7 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Optional<User> userDetails = userRepository.findByUsername(username);
         if(userDetails.isPresent()){
             if (userDetails != null && passwordEncoder.matches(password, userDetails.get().getPassword())) {
-                return new UsernamePasswordAuthenticationToken(userDetails.get(), password);
+                return new UsernamePasswordAuthenticationToken(userDetails.get(), password, userDetails.get().getAuthorities());
             } else {
                 throw new BadCredentialsException("Invalid password");
             }

@@ -7,6 +7,8 @@ import com.lootopiaApi.model.entity.User;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 
+import java.nio.file.AccessDeniedException;
+
 public interface UserService {
     MfaTokenData registerUser(User user) throws UserAlreadyExistException, QrGenerationException;
     //MfaTokenData mfaSetup(String email) throws UnkownIdentifierException, QrGenerationException;
@@ -17,4 +19,7 @@ public interface UserService {
 
     void initiatePasswordReset(String email) throws MessagingException;
     boolean resetPassword(String token, String newPassword);
+
+    User getAuthenticatedUser();
+    void assertIsPartner() throws AccessDeniedException;
 }

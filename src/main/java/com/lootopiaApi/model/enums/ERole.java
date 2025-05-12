@@ -1,4 +1,4 @@
-package com.lootopiaApi.model;
+package com.lootopiaApi.model.enums;
 
 public enum ERole {
     USER,
