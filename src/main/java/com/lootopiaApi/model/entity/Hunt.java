@@ -1,6 +1,7 @@
 package com.lootopiaApi.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lootopiaApi.model.annotations.ValidHuntDates;
 import com.lootopiaApi.model.enums.HuntLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ValidHuntDates
 public class Hunt extends Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +26,14 @@ public class Hunt extends Audit {
     private String title;
     private String description;
     private String location;
-    private LocalDateTime date;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
     private HuntLevel level;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String image;
 
     @ManyToOne
