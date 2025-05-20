@@ -1,5 +1,6 @@
 package com.lootopiaApi.controller;
 
+import com.lootopiaApi.DTOs.HuntDto;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.service.HuntService;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ public class PartnerHuntController {
     }
 
     @PostMapping
-    public ResponseEntity<Hunt> create(@RequestBody Hunt hunt) throws AccessDeniedException {
+    public ResponseEntity<Hunt> create(@RequestBody HuntDto hunt) throws AccessDeniedException {
         return ResponseEntity.ok(huntService.createHunt(hunt));
     }
 
     @GetMapping
     public ResponseEntity<List<Hunt>> getAll() {
-        return ResponseEntity.ok(huntService.findByCreatorId());
+        return ResponseEntity.ok(huntService.findByPartnerId());
     }
 
 }

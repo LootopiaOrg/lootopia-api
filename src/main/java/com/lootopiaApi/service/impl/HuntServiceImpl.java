@@ -1,5 +1,7 @@
 package com.lootopiaApi.service.impl;
 
+import com.lootopiaApi.DTOs.HuntDto;
+import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.HuntRepository;
@@ -22,15 +24,17 @@ public class HuntServiceImpl implements HuntService {
     }
 
     @Override
-    public Hunt createHunt(Hunt hunt) throws AccessDeniedException {
+    public Hunt createHunt(HuntDto dto) throws AccessDeniedException {
         this.userService.assertIsPartner();
-        hunt.setCreator(this.userService.getAuthenticatedUser());
-        return this.huntRepository.save(hunt);
+        User partner = this.userService.getAuthenticatedUser();
+
+        Hunt hunt = HuntMapper.toEntity(dto, partner);
+        return huntRepository.save(hunt);
     }
 
     @Override
-    public List<Hunt> findByCreatorId() {
+    public List<Hunt> findByPartnerId() {
         User user = this.userService.getAuthenticatedUser();
-        return this.huntRepository.findByCreatorId(user.getId());
+        return this.huntRepository.findByPartnerId_Id(user.getId());
     }
 }

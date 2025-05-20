@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "hunts")
@@ -37,7 +39,10 @@ public class Hunt extends Audit {
     private String image;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "partner_id")
     @JsonIgnore
-    private User creator;
+    private User partnerId;
+
+    @OneToMany(mappedBy = "hunt", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HuntStep> steps = new ArrayList<>();
 }
