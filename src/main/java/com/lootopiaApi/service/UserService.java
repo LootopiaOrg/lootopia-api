@@ -2,14 +2,18 @@ package com.lootopiaApi.service;
 
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
+import com.lootopiaApi.model.AddressDto;
+import com.lootopiaApi.model.ApiResponse;
 import com.lootopiaApi.model.MfaTokenData;
 import com.lootopiaApi.model.entity.User;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Optional;
 
 public interface UserService {
+
     MfaTokenData registerUser(User user) throws UserAlreadyExistException, QrGenerationException;
     //MfaTokenData mfaSetup(String email) throws UnkownIdentifierException, QrGenerationException;
     boolean verifyTotp(final String code,String username);
@@ -22,4 +26,9 @@ public interface UserService {
 
     User getAuthenticatedUser();
     void assertIsPartner() throws AccessDeniedException;
+
+    public void save(User user);
+
+    ApiResponse toggleMfa(User user);
+
 }

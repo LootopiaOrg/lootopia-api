@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ApiResponse {
-    private String message;
-    private String status;
+public class MfaInfoDto {
+    private boolean mfaEnabled;
+    private String secretKey;
 }
