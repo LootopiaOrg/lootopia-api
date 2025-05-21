@@ -15,7 +15,6 @@ import com.lootopiaApi.service.EmailService;
 import com.lootopiaApi.service.TotpManager;
 import com.lootopiaApi.service.UserService;
 import dev.samstevens.totp.exceptions.QrGenerationException;
-import dev.samstevens.totp.time.TimeProvider;
 import jakarta.mail.MessagingException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.security.core.Authentication;
@@ -169,4 +168,22 @@ public class UserServiceImpl implements UserService {
             throw new AccessDeniedException("Access denied: Only partners can perform this action.");
         }
     }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public ApiResponse toggleMfa(User user) {
+        boolean current = user.isMfaEnabled();
+        user.setMfaEnabled(!current);
+        save(user);
+
+        return new ApiResponse(
+                "MFA " + (!current ? "enabled" : "disabled") + " successfully.",
+                "success"
+        );
+    }
+
 }

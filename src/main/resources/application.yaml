@@ -21,3 +21,10 @@ spring:
           starttls:
             required: true
             enable: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+file:
+  upload-dir: C:\Users\Mohamed-work\Desktop\lootopia-uploads

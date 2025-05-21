@@ -1,5 +1,6 @@
 package com.lootopiaApi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +39,7 @@ public class User extends Audit implements UserDetails {
 
     private String firstName;
     private String lastName;
+    private String  bio;
     private boolean active;
     private boolean accountVerified;
 
@@ -47,6 +49,9 @@ public class User extends Audit implements UserDetails {
     @Column(name = "reset_token_expiry")
     private LocalDateTime resetTokenExpiry;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Address address;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -63,21 +68,21 @@ public class User extends Audit implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return active;
     }
 }
