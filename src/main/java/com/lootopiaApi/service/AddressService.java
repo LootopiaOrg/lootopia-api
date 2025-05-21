@@ -1,6 +1,6 @@
 package com.lootopiaApi.service;
 
-import com.lootopiaApi.model.AddressDto;
+import com.lootopiaApi.DTOs.AddressDto;
 import com.lootopiaApi.model.entity.Address;
 
 import java.util.Optional;
