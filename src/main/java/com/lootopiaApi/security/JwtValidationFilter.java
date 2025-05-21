@@ -38,7 +38,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }catch (Exception e){
-            log.error("Exception wile processing the JWT"+e.getMessage());
+            log.error("Exception wile processing the JWT : "+e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
