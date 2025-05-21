@@ -1,9 +1,11 @@
 package com.lootopiaApi.service.impl;
 
+import com.lootopiaApi.DTOs.ApiResponse;
+import com.lootopiaApi.DTOs.MfaTokenData;
+import com.lootopiaApi.DTOs.UserUpdateDTO;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.MFAServerAppException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
-import com.lootopiaApi.model.*;
 import com.lootopiaApi.model.entity.EmailConfirmationToken;
 import com.lootopiaApi.model.entity.Role;
 import com.lootopiaApi.model.entity.User;
@@ -185,5 +187,13 @@ public class UserServiceImpl implements UserService {
                 "success"
         );
     }
+
+    public void updateUserProfile(User user, UserUpdateDTO request) {
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setBio(request.getBio());
+        userRepository.save(user);
+    }
+
 
 }

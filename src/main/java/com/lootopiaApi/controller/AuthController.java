@@ -1,8 +1,8 @@
 package com.lootopiaApi.controller;
 
+import com.lootopiaApi.DTOs.*;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
-import com.lootopiaApi.model.*;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.service.JWTService;
 import com.lootopiaApi.service.UserService;

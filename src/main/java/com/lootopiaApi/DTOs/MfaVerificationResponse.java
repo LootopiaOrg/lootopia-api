@@ -1,4 +1,4 @@
-package com.lootopiaApi.model;
+package com.lootopiaApi.DTOs;
 
 import lombok.Builder;
 import lombok.Data;

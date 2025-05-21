@@ -1,6 +1,6 @@
 package com.lootopiaApi.service.impl;
 
-import com.lootopiaApi.model.AddressDto;
+import com.lootopiaApi.DTOs.AddressDto;
 import com.lootopiaApi.model.entity.Address;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.AddressRepository;

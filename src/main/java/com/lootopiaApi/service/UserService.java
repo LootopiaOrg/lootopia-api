@@ -1,16 +1,15 @@
 package com.lootopiaApi.service;
 
+import com.lootopiaApi.DTOs.UserUpdateDTO;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
-import com.lootopiaApi.model.AddressDto;
-import com.lootopiaApi.model.ApiResponse;
-import com.lootopiaApi.model.MfaTokenData;
+import com.lootopiaApi.DTOs.ApiResponse;
+import com.lootopiaApi.DTOs.MfaTokenData;
 import com.lootopiaApi.model.entity.User;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Optional;
 
 public interface UserService {
 
@@ -30,5 +29,8 @@ public interface UserService {
     public void save(User user);
 
     ApiResponse toggleMfa(User user);
+
+    public void updateUserProfile(User user, UserUpdateDTO request);
+
 
 }

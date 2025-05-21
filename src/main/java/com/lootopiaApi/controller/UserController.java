@@ -1,6 +1,6 @@
 package com.lootopiaApi.controller;
 
-import com.lootopiaApi.model.*;
+import com.lootopiaApi.DTOs.*;
 import com.lootopiaApi.model.entity.Address;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.service.AddressService;
@@ -76,6 +76,23 @@ public class UserController {
                 user.getLastName(),
                 user.getBio()
         );
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserDto> updateUserProfile(@RequestBody UserUpdateDTO request) {
+        User user = userService.getAuthenticatedUser();
+        userService.updateUserProfile(user, request);
+        User updatedUser = userService.getAuthenticatedUser();
+
+        UserDto dto = new UserDto(
+                updatedUser.getId(),
+                updatedUser.getUsername(),
+                updatedUser.getFirstName(),
+                updatedUser.getLastName(),
+                updatedUser.getBio()
+        );
+
         return ResponseEntity.ok(dto);
     }
 
