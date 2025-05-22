@@ -39,4 +39,11 @@ public class PartnerHuntController {
         return ResponseEntity.ok(dtoPage);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<HuntDto> getById(@PathVariable Long id) {
+        Hunt hunt = huntService.findById(id); // orElseThrow inside service
+        HuntDto dto = HuntMapper.toDto(hunt);
+        return ResponseEntity.ok(dto);
+    }
+
 }

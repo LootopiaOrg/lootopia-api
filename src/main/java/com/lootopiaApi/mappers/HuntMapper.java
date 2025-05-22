@@ -32,6 +32,7 @@ public class HuntMapper {
 
     public static HuntDto toDto(Hunt hunt) {
         HuntDto dto = new HuntDto();
+        dto.setId(hunt.getId());
         dto.setTitle(hunt.getTitle());
         dto.setDescription(hunt.getDescription());
         dto.setLocation(hunt.getLocation());
