@@ -7,6 +7,8 @@ import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.HuntRepository;
 import com.lootopiaApi.service.HuntService;
 import com.lootopiaApi.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -36,5 +38,10 @@ public class HuntServiceImpl implements HuntService {
     public List<Hunt> findByPartnerId() {
         User user = this.userService.getAuthenticatedUser();
         return this.huntRepository.findByPartnerId_Id(user.getId());
+    }
+
+    @Override
+    public Page<Hunt> findAll(Pageable pageable) {
+        return huntRepository.findAll(pageable);
     }
 }
