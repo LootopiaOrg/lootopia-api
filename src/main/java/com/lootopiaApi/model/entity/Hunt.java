@@ -34,7 +34,6 @@ public class Hunt extends Audit {
     @Enumerated(EnumType.STRING)
     private HuntLevel level;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String image;
 

@@ -1,8 +1,11 @@
 package com.lootopiaApi.controller;
 
 import com.lootopiaApi.DTOs.HuntDto;
+import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.service.HuntService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +30,13 @@ public class PartnerHuntController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Hunt>> getAll() {
-        return ResponseEntity.ok(huntService.findByPartnerId());
+    public ResponseEntity<Page<HuntDto>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Hunt> huntPage = huntService.findAll(PageRequest.of(page, size));
+        Page<HuntDto> dtoPage = huntPage.map(HuntMapper::toDto);
+        return ResponseEntity.ok(dtoPage);
     }
 
 }

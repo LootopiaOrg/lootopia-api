@@ -28,7 +28,6 @@ public class HuntStep extends Audit {
 
     private String location;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String illustration;
 
