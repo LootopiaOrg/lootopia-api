@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class HuntDto {
-    private Number id;
+    private Long id;
     private String title;
     private String description;
     private String location;
@@ -17,5 +17,15 @@ public class HuntDto {
     private LocalDateTime endDate;
     private HuntLevel level;
     private String image;
+    private String mode;
+    private String accessMode;
+    private Boolean chatEnabled;
+    private Integer maxParticipants;
+    private Integer participationFee;
+    private Integer digDelaySeconds;
+    private String organizerNickname;
     private List<HuntStepDto> steps = new ArrayList<>();
+    private List<RewardDto> rewards = new ArrayList<>();
+    private List<MapConfigDto> maps = new ArrayList<>();
+
 }

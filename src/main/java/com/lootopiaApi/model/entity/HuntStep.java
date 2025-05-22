@@ -2,10 +2,7 @@ package com.lootopiaApi.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "steps")
@@ -26,7 +23,13 @@ public class HuntStep extends Audit {
 
     private String hint;
 
-    private String location;
+    private String type; // exemple : "énigme", "repère", "cache".
+
+    private String validationKey; // exemple : "passphrase", "repere", "cache"
+
+    private Double latitude;
+
+    private Double longitude;
 
     @Column(columnDefinition = "TEXT")
     private String illustration;

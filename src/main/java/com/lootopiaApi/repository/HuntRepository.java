@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface HuntRepository extends JpaRepository<Hunt, Long> {
-    List<Hunt> findByPartnerId_Id(Long id);
+    List<Hunt> findByOrganizer_Id(Long id);
 }
