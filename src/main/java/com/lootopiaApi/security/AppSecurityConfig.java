@@ -52,7 +52,18 @@ public class AppSecurityConfig {
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/error**","confirm-email","/register**","/login**","/verifyTotp**", "/forgot-password", "/reset-password").permitAll()
+                        .requestMatchers(
+                                "/error**",
+                                "confirm-email",
+                                "/register**",
+                                "/login**",
+                                "/verifyTotp**",
+                                "/forgot-password",
+                                "/reset-password",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                .build();
