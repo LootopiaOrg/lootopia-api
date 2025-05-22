@@ -13,4 +13,7 @@ public interface HuntService {
     Hunt createHunt(HuntDto hunt) throws AccessDeniedException;
     List<Hunt> findByPartnerId();
     Page<Hunt> findAll(Pageable pageable);
+
+    Hunt findById(Long id);
+
 }

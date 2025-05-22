@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class HuntDto {
+    private Number id;
     private String title;
     private String description;
     private String location;
