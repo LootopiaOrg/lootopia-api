@@ -8,6 +8,7 @@ import com.lootopiaApi.service.JWTService;
 import com.lootopiaApi.service.UserService;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -153,6 +155,16 @@ public class AuthController {
                     new ApiResponse("Error: " + e.getMessage(), "error")
             );
         }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/auth/roles")
+    public ResponseEntity<List<String>> getRoles() {
+        User user = this.userService.getAuthenticatedUser();
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getRole().name())
+                .toList();
+        return ResponseEntity.ok(roles);
     }
 
 }
