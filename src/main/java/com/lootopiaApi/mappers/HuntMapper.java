@@ -8,6 +8,8 @@ import com.lootopiaApi.model.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import com.lootopiaApi.DTOs.MapConfigDto;
+import com.lootopiaApi.model.entity.MapConfig;
 
 public class HuntMapper {
 
@@ -20,13 +22,21 @@ public class HuntMapper {
         hunt.setEndDate(dto.getEndDate());
         hunt.setLevel(dto.getLevel());
         hunt.setImage(dto.getImage());
-        hunt.setPartnerId(partner);
-
+        hunt.setMode(dto.getMode());
+        hunt.setAccessMode(dto.getAccessMode());
+        hunt.setChatEnabled(dto.getChatEnabled());
+        hunt.setMaxParticipants(dto.getMaxParticipants());
+        hunt.setParticipationFee(dto.getParticipationFee());
+        hunt.setDigDelaySeconds(dto.getDigDelaySeconds());
+        hunt.setOrganizer(partner);
         List<HuntStep> steps = dto.getSteps().stream()
                 .map(stepDto -> HuntStepMapper.toEntity(stepDto, hunt))
                 .collect(Collectors.toList());
-
         hunt.setSteps(steps);
+        List<MapConfig> mapEntities = dto.getMaps().stream()
+                .map(mapDto -> MapMapper.toEntity(mapDto, hunt))
+                .collect(Collectors.toList());
+        hunt.setMaps(mapEntities);
         return hunt;
     }
 
@@ -40,12 +50,21 @@ public class HuntMapper {
         dto.setEndDate(hunt.getEndDate());
         dto.setLevel(hunt.getLevel());
         dto.setImage(hunt.getImage());
-
+        dto.setMode(hunt.getMode());
+        dto.setAccessMode(hunt.getAccessMode());
+        dto.setChatEnabled(hunt.getChatEnabled());
+        dto.setMaxParticipants(hunt.getMaxParticipants());
+        dto.setParticipationFee(hunt.getParticipationFee());
+        dto.setDigDelaySeconds(hunt.getDigDelaySeconds());
+        dto.setOrganizerNickname(hunt.getOrganizer().getFirstName());
         List<HuntStepDto> stepDtos = hunt.getSteps().stream()
                 .map(HuntStepMapper::toDto)
                 .collect(Collectors.toList());
-
         dto.setSteps(stepDtos);
+        List<MapConfigDto> mapDtos = hunt.getMaps().stream()
+                .map(MapMapper::toDto)
+                .collect(Collectors.toList());
+        dto.setMaps(mapDtos);
         return dto;
     }
 }

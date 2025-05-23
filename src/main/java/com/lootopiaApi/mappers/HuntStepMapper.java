@@ -11,7 +11,10 @@ public class HuntStepMapper {
         step.setStepNumber(dto.getStepNumber());
         step.setRiddle(dto.getRiddle());
         step.setHint(dto.getHint());
-        step.setLocation(dto.getLocation());
+        step.setType(dto.getType());
+        step.setValidationKey(dto.getValidationKey());
+        step.setLatitude(dto.getLatitude());
+        step.setLongitude(dto.getLongitude());
         step.setIllustration(dto.getIllustration());
         step.setHunt(hunt);
         return step;
@@ -22,7 +25,10 @@ public class HuntStepMapper {
         dto.setStepNumber(step.getStepNumber());
         dto.setRiddle(step.getRiddle());
         dto.setHint(step.getHint());
-        dto.setLocation(step.getLocation());
+        dto.setType(step.getType());
+        dto.setValidationKey(step.getValidationKey());
+        dto.setLatitude(step.getLatitude());
+        dto.setLongitude(step.getLongitude());
         dto.setIllustration(step.getIllustration());
         return dto;
     }

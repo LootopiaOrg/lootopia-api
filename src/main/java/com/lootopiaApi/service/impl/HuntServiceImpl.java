@@ -39,7 +39,7 @@ public class HuntServiceImpl implements HuntService {
     @Override
     public List<Hunt> findByPartnerId() {
         User user = this.userService.getAuthenticatedUser();
-        return this.huntRepository.findByPartnerId_Id(user.getId());
+        return this.huntRepository.findByOrganizer_Id(user.getId());
     }
 
     @Override
