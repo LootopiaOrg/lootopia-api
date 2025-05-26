@@ -2,9 +2,9 @@ spring:
   application:
     name: lootopia-api
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/project_db
+    username: postgres
+    password: 1234
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -12,8 +12,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    username: email
+    password: pws
     properties:
       mail:
         smtp:
@@ -28,3 +28,13 @@ spring:
 
 file:
   upload-dir: C:\Users\Mohamed-work\Desktop\lootopia-uploads
+
+stripe:
+  secret:
+    key: sk_test_
+  success:
+    url: http://localhost:4200/app/market/success
+  cancel:
+    url: http://localhost:4200/app/market/canceled
+  webhook:
+    secret: whsec_

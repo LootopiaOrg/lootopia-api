@@ -19,12 +19,12 @@ public class DataInitializer {
             offerRepository.deleteAll();
             log.info("Offers deleted");
             offerRepository.saveAll(List.of(
-                    Offer.builder().crowns(100).price(1.99).description("Découverte express").stripePriceId("prod_SNCmc7nWmYmTEU").active(true).build(),
-                    Offer.builder().crowns(250).price(4.99).description("Pack parfait pour débuter").stripePriceId("prod_SNCnFPWacJXVsL").active(true).build(),
-                    Offer.builder().crowns(500).price(8.99).description("Le plus populaire").badge("popular").stripePriceId("prod_SNCoRpJ4Jx4Kev").active(true).build(),
-                    Offer.builder().crowns(1000).price(15.99).description("Offre spéciale premium").stripePriceId("prod_SNCoa9F41Rv9Er").active(true).build(),
-                    Offer.builder().crowns(2000).price(24.99).originalPrice(29.99).description("Pack des chasseurs pro").badge("promo").stripePriceId("prod_SNCprZT3PFLh4w").active(true).build(),
-                    Offer.builder().crowns(5000).price(59.99).description("Le pack des légendes").stripePriceId("prod_SNCqXcsJ2EBd7H").active(true).build()
+                    Offer.builder().crowns(100).price(1.99).description("Découverte express").stripePriceId("price_1RSSMx4JtcL5tx0DQgw8zoJ6").active(true).build(),
+                    Offer.builder().crowns(250).price(4.99).description("Pack parfait pour débuter").stripePriceId("price_1RSSNn4JtcL5tx0DD0ZgDMsz").active(true).build(),
+                    Offer.builder().crowns(500).price(8.99).description("Le plus populaire").badge("popular").stripePriceId("price_1RSSOX4JtcL5tx0D3MBnOKGt").active(true).build(),
+                    Offer.builder().crowns(1000).price(15.99).description("Offre spéciale premium").stripePriceId("price_1RSSP84JtcL5tx0D7Ot5TUd3").active(true).build(),
+                    Offer.builder().crowns(2000).price(24.99).originalPrice(29.99).description("Pack des chasseurs pro").badge("promo").stripePriceId("price_1RSSQC4JtcL5tx0DZwKCBwAI").active(true).build(),
+                    Offer.builder().crowns(5000).price(59.99).description("Le pack des légendes").stripePriceId("price_1RSSRA4JtcL5tx0DmfZu5akt").active(true).build()
             ));
             log.info("Offers initialized");
         };
