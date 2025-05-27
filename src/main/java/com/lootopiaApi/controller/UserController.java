@@ -5,6 +5,7 @@ import com.lootopiaApi.model.entity.Address;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.service.AddressService;
 import com.lootopiaApi.service.ProfileImagesService;
+import com.lootopiaApi.service.UserBalanceService;
 import com.lootopiaApi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
     private final ProfileImagesService profileImagesService;
+    private final UserBalanceService userBalanceService;
 
 
     @PostMapping("/upload/profile")
@@ -65,6 +67,11 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse(base64, "success"));
     }
 
+    @GetMapping("/balance")
+    public ResponseEntity<Integer> getBalance() {
+        User user = userService.getAuthenticatedUser();
+        return ResponseEntity.ok(this.userBalanceService.getCrowns(user.getId()));
+    }
 
     @GetMapping
     public ResponseEntity<UserDto> getConnectedUser() {

@@ -15,6 +15,7 @@ import com.lootopiaApi.repository.RoleRepository;
 import com.lootopiaApi.repository.UserRepository;
 import com.lootopiaApi.service.EmailService;
 import com.lootopiaApi.service.TotpManager;
+import com.lootopiaApi.service.UserBalanceService;
 import com.lootopiaApi.service.UserService;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
@@ -44,16 +45,19 @@ public class UserServiceImpl implements UserService {
 
     private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
 
+    private final UserBalanceService userBalanceService;
+
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
     private static final Charset US_ASCII = Charset.forName("US-ASCII");
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, TotpManager totpManager, EmailService emailService, EmailConfirmationTokenRepository emailConfirmationTokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, TotpManager totpManager, EmailService emailService, EmailConfirmationTokenRepository emailConfirmationTokenRepository, UserBalanceService userBalanceService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.totpManager = totpManager;
         this.emailService = emailService;
         this.emailConfirmationTokenRepository = emailConfirmationTokenRepository;
+        this.userBalanceService = userBalanceService;
     }
 
     @Override
@@ -75,6 +79,10 @@ public class UserServiceImpl implements UserService {
             }
 
             User savedUser = userRepository.save(user);
+            if (!savedUser.getRoles().contains(ERole.ADMIN)) {
+                this.userBalanceService.createBalanceFor(savedUser.getId());
+            }
+
             this.sendRegistrationConfirmationEmail(user);
             String qrCode = totpManager.getQRCode(savedUser.getSecretKey());
             return MfaTokenData.builder()

@@ -28,3 +28,13 @@ spring:
 
 file:
   upload-dir: C:\Users\Mohamed-work\Desktop\lootopia-uploads
+
+stripe:
+  secret:
+    key: sk_test_
+  success:
+    url: http://localhost:4200/app/market/success
+  cancel:
+    url: http://localhost:4200/app/market/canceled
+  webhook:
+    secret: whsec_
