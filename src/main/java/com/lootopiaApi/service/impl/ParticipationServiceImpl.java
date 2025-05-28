@@ -33,19 +33,19 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     public Participation getParticipation(Long userId, Long huntId) {
-        return participationRepository.findByUserIdAndHuntId(userId, huntId)
+        return participationRepository.findByPlayerIdAndHuntId(userId, huntId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participation non trouvée."));
     }
 
     @Override
-    public List<Participation> getUserParticipations(Long userId) {
-        return participationRepository.findAllByUserId(userId);
+    public List<Participation> getUserParticipations(Long playerId) {
+        return participationRepository.findAllByPlayerId(playerId);
     }
 
     @Override
     @Transactional
     public Participation participate(Long userId, Long huntId) {
-        Optional<Participation> existing = participationRepository.findByUserIdAndHuntId(userId, huntId);
+        Optional<Participation> existing = participationRepository.findByPlayerIdAndHuntId(userId, huntId);
         if (existing.isPresent()) {
             return existing.get();
         }
@@ -56,6 +56,8 @@ public class ParticipationServiceImpl implements ParticipationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé."));
 
+        /*
+
         // Déduire les couronnes si un frais de participation est défini
         Integer fee = hunt.getParticipationFee() != null ? hunt.getParticipationFee() : 0;
         if (user.getCrowns() < fee) {
@@ -64,6 +66,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
         user.setCrowns(user.getCrowns() - fee);
         userRepository.save(user);
+        */
 
         Participation participation = new Participation();
         participation.setPlayer(user);

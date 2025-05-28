@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
 
-    Optional<Participation> findByUserIdAndHuntId(Long playerId, Long huntId);
-    List<Participation> findAllByUserId(Long userId);
+    Optional<Participation> findByPlayerIdAndHuntId(Long playerId, Long huntId);
+    List<Participation> findAllByPlayerId(Long playerId);
 }

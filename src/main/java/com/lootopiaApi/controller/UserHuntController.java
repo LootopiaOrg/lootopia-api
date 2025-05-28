@@ -1,6 +1,7 @@
 package com.lootopiaApi.controller;
 
 import com.lootopiaApi.DTOs.HuntDto;
+import com.lootopiaApi.DTOs.HuntPlayerDto;
 import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.User;
@@ -37,20 +38,20 @@ public class UserHuntController {
 
     // GET all public hunts
     @GetMapping
-    public ResponseEntity<Page<HuntDto>> listAvailableHunts(
+    public ResponseEntity<Page<HuntPlayerDto>> listAvailableHunts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<Hunt> hunts = huntService.findAllPublicAvailable(PageRequest.of(page, size));
-        Page<HuntDto> dtos = hunts.map(HuntMapper::toDto);
+        Page<HuntPlayerDto> dtos = hunts.map(HuntMapper::toPlayerDto);
         return ResponseEntity.ok(dtos);
     }
 
     // GET hunt by ID
     @GetMapping("/{id}")
-    public ResponseEntity<HuntDto> getHuntDetails(@PathVariable Long id) {
+    public ResponseEntity<HuntPlayerDto> getHuntDetails(@PathVariable Long id) {
         Hunt hunt = huntService.findById(id);
-        return ResponseEntity.ok(HuntMapper.toDto(hunt));
+        return ResponseEntity.ok(HuntMapper.toPlayerDto(hunt));
     }
 
     // POST participate in hunt

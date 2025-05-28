@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class JWTServiceImpl implements JWTService {
@@ -31,10 +33,18 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public String generateJwt(String username) throws ParseException {
         Date date= new Date();
-        return  Jwts.builder()
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        var roles = user.getRoles().stream()
+                .map(role -> "ROLE_" + role.getRole())
+                .toList();
+
+        return Jwts.builder()
                 .setIssuer("MFA Server")
-                .setSubject("JWT Auth Token")
+                .setSubject(username)
                 .claim("username", username)
+                .claim("roles", roles)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + 8 * 60 * 60 * 1000))
                 .signWith(secretKey)
@@ -50,14 +60,20 @@ public class JWTServiceImpl implements JWTService {
                 .getBody();
 
         String username = claims.get("username", String.class);
+        List<String> roles = claims.get("roles", List.class); // roles from token
 
-        if (username != null) {
+        if (username != null && roles != null) {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            List<SimpleGrantedAuthority> authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
+
+            return new UsernamePasswordAuthenticationToken(user, null, authorities);
         }
 
         return null;
     }
+
 }

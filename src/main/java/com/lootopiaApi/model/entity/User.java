@@ -43,9 +43,6 @@ public class User extends Audit implements UserDetails {
     private boolean active;
     private boolean accountVerified;
 
-    @Column(name = "crowns_balance", nullable = false)
-    private Integer crowns = 50;
-
     @Column(name = "reset_token")
     private String resetToken;
 
