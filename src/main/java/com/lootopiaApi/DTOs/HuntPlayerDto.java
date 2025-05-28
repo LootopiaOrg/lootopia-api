@@ -4,11 +4,9 @@ import com.lootopiaApi.model.enums.HuntLevel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
-public class HuntDto {
+public class HuntPlayerDto {
     private Long id;
     private String title;
     private String description;
@@ -18,13 +16,8 @@ public class HuntDto {
     private HuntLevel level;
     private String image;
     private String mode;
-    private String accessMode;
-    private Boolean chatEnabled;
     private Integer maxParticipants;
     private Integer participationFee;
     private Integer digDelaySeconds;
     private String organizerNickname;
-    private List<HuntStepDto> steps = new ArrayList<>();
-    private List<RewardDto> rewards = new ArrayList<>();
-    private List<MapConfigDto> maps = new ArrayList<>();
 }

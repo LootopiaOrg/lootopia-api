@@ -16,4 +16,7 @@ public interface HuntService {
 
     Hunt findById(Long id);
 
+    Page<Hunt> findAllPublicAvailable(Pageable pageable);
+
+
 }

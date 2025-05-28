@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +41,11 @@ public class HuntServiceImpl implements HuntService {
     public List<Hunt> findByPartnerId() {
         User user = this.userService.getAuthenticatedUser();
         return this.huntRepository.findByOrganizer_Id(user.getId());
+    }
+
+    @Override
+    public Page<Hunt> findAllPublicAvailable(Pageable pageable) {
+        return huntRepository.findByAccessModeAndEndDateAfter("public", LocalDateTime.now(), pageable);
     }
 
     @Override
