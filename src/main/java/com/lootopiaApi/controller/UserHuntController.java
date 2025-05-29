@@ -1,6 +1,7 @@
 package com.lootopiaApi.controller;
 
 import com.lootopiaApi.DTOs.HuntDto;
+import com.lootopiaApi.DTOs.HuntParticipantDto;
 import com.lootopiaApi.DTOs.HuntPlayerDto;
 import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
@@ -70,12 +71,12 @@ public class UserHuntController {
 
     // GET list of hunts user has participated in
     @GetMapping("/my-participations")
-    public ResponseEntity<List<HuntDto>> getMyParticipatedHunts() {
+    public ResponseEntity<List<HuntParticipantDto>> getMyParticipatedHunts() {
         User user = userService.getAuthenticatedUser();
         List<Participation> participations = participationService.getUserParticipations(user.getId());
-        List<HuntDto> hunts = participations.stream()
+        List<HuntParticipantDto> hunts = participations.stream()
                 .map(Participation::getHunt)
-                .map(HuntMapper::toDto)
+                .map(HuntMapper::toParticipantDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(hunts);
     }

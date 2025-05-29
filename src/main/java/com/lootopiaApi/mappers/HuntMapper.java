@@ -1,8 +1,6 @@
 package com.lootopiaApi.mappers;
 
-import com.lootopiaApi.DTOs.HuntDto;
-import com.lootopiaApi.DTOs.HuntPlayerDto;
-import com.lootopiaApi.DTOs.HuntStepDto;
+import com.lootopiaApi.DTOs.*;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.HuntStep;
 import com.lootopiaApi.model.entity.User;
@@ -10,7 +8,7 @@ import com.lootopiaApi.model.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.lootopiaApi.DTOs.MapConfigDto;
+
 import com.lootopiaApi.model.entity.MapConfig;
 import com.lootopiaApi.model.enums.HuntLevel;
 
@@ -87,6 +85,34 @@ public class HuntMapper {
         dto.setDigDelaySeconds(hunt.getDigDelaySeconds());
         dto.setOrganizerNickname(hunt.getOrganizer().getUsername());
         return dto;
+    }
 
+    public static HuntParticipantDto toParticipantDto(Hunt hunt) {
+        HuntParticipantDto dto = new HuntParticipantDto();
+        dto.setId(hunt.getId());
+        dto.setTitle(hunt.getTitle());
+        dto.setDescription(hunt.getDescription());
+        dto.setLocation(hunt.getLocation());
+        dto.setStartDate(hunt.getStartDate());
+        dto.setEndDate(hunt.getEndDate());
+        dto.setLevel(hunt.getLevel());
+        dto.setImage(hunt.getImage());
+        dto.setMode(hunt.getMode());
+        dto.setMaxParticipants(hunt.getMaxParticipants());
+        dto.setParticipationFee(hunt.getParticipationFee());
+        dto.setDigDelaySeconds(hunt.getDigDelaySeconds());
+        dto.setOrganizerNickname(hunt.getOrganizer().getUsername());
+
+        List<HuntStepPlayerDto> stepDtos = hunt.getSteps().stream()
+                .map(HuntStepMapper::toPlayerDto)
+                .collect(Collectors.toList());
+        dto.setSteps(stepDtos);
+
+        List<MapConfigDto> mapDtos = hunt.getMaps().stream()
+                .map(MapMapper::toDto)
+                .collect(Collectors.toList());
+        dto.setMaps(mapDtos);
+
+        return dto;
     }
 }

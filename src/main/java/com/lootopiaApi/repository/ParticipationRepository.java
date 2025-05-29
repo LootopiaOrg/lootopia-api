@@ -9,4 +9,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     Optional<Participation> findByPlayerIdAndHuntId(Long playerId, Long huntId);
     List<Participation> findAllByPlayerId(Long playerId);
+    long countByHuntId(Long huntId);
 }

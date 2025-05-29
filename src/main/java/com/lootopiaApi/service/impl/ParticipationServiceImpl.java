@@ -1,5 +1,7 @@
 package com.lootopiaApi.service.impl;
 
+import com.lootopiaApi.model.entity.UserBalance;
+import com.lootopiaApi.repository.UserBalanceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.lootopiaApi.model.entity.Hunt;
@@ -20,15 +22,17 @@ public class ParticipationServiceImpl implements ParticipationService {
     private final ParticipationRepository participationRepository;
     private final HuntRepository huntRepository;
     private final UserRepository userRepository;
+    private final UserBalanceRepository userBalanceRepository;
 
     public ParticipationServiceImpl(
             ParticipationRepository participationRepository,
             HuntRepository huntRepository,
-            UserRepository userRepository
+            UserRepository userRepository, UserBalanceRepository userBalanceRepository
     ) {
         this.participationRepository = participationRepository;
         this.huntRepository = huntRepository;
         this.userRepository = userRepository;
+        this.userBalanceRepository = userBalanceRepository;
     }
 
     @Override
@@ -47,26 +51,38 @@ public class ParticipationServiceImpl implements ParticipationService {
     public Participation participate(Long userId, Long huntId) {
         Optional<Participation> existing = participationRepository.findByPlayerIdAndHuntId(userId, huntId);
         if (existing.isPresent()) {
-            return existing.get();
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Vous participez déjà à cette chasse.");
         }
 
         Hunt hunt = huntRepository.findById(huntId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chasse non trouvée."));
 
+        if (hunt.getOrganizer() != null && hunt.getOrganizer().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "L'organisateur ne peut pas participer à sa propre chasse.");
+        }
+
+        long participantCount = participationRepository.countByHuntId(huntId);
+        if (hunt.getMaxParticipants() != null && participantCount >= hunt.getMaxParticipants()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nombre maximum de participants a été atteint.");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé."));
 
-        /*
+        Optional<UserBalance> userBalanceOpt = userBalanceRepository.findByUserId(user.getId());
+
+        UserBalance userBalance = userBalanceOpt.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Le solde utilisateur est introuvable.")
+        );
 
         // Déduire les couronnes si un frais de participation est défini
         Integer fee = hunt.getParticipationFee() != null ? hunt.getParticipationFee() : 0;
-        if (user.getCrowns() < fee) {
-            throw new IllegalStateException("Solde de couronnes insuffisant.");
+        if (userBalance.getCrowns() < fee) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solde de couronnes insuffisant.");
         }
 
-        user.setCrowns(user.getCrowns() - fee);
-        userRepository.save(user);
-        */
+        userBalance.setCrowns(userBalance.getCrowns() - fee);
+        userBalanceRepository.save(userBalance);
 
         Participation participation = new Participation();
         participation.setPlayer(user);
