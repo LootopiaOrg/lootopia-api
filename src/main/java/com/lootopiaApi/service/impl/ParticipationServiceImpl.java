@@ -1,18 +1,18 @@
 package com.lootopiaApi.service.impl;
 
-import com.lootopiaApi.model.entity.UserBalance;
+import com.lootopiaApi.DTOs.StepValidationRequest;
+import com.lootopiaApi.model.entity.*;
 import com.lootopiaApi.repository.UserBalanceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.lootopiaApi.model.entity.Hunt;
-import com.lootopiaApi.model.entity.Participation;
-import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.repository.HuntRepository;
 import com.lootopiaApi.repository.ParticipationRepository;
 import com.lootopiaApi.repository.UserRepository;
 import com.lootopiaApi.service.ParticipationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,4 +92,81 @@ public class ParticipationServiceImpl implements ParticipationService {
 
         return participationRepository.save(participation);
     }
+
+    public boolean validateStep(StepValidationRequest request) {
+
+        Participation participation = participationRepository.findById(request.getParticipationId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participation introuvable"));
+
+        Hunt hunt = participation.getHunt();
+
+        // Rechercher l’étape correspondante par stepNumber
+        Optional<HuntStep> optionalStep = hunt.getSteps().stream()
+                .filter(step -> step.getStepNumber() == request.getStepNumber())
+                .findFirst();
+
+        if (optionalStep.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Étape non trouvée pour cette chasse");
+        }
+
+        HuntStep step = optionalStep.get();
+
+        // Vérifier que c'est la bonne étape à valider
+        if (step.getStepNumber() != participation.getCurrentStepNumber()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce n'est pas l'étape attendue");
+        }
+
+        boolean isValid = switch (step.getType()) {
+            case "enigme" -> {
+                if (request.getAnswer() == null || request.getAnswer().isBlank()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Réponse manquante pour l'énigme");
+                }
+                yield step.getValidationKey().equalsIgnoreCase(request.getAnswer().trim());
+            }
+            case "repere", "cache" -> {
+                if (request.getLatitude() == null || request.getLongitude() == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Coordonnées manquantes pour le repère/cache");
+                }
+                double distance = distanceInMeters(
+                        step.getLatitude(), step.getLongitude(),
+                        request.getLatitude(), request.getLongitude()
+                );
+                yield distance < 20.0;
+            }
+            default -> {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Type d'étape inconnu");
+            }
+        };
+
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation de l'étape échouée");
+        }
+
+        // Marquer l'étape comme complétée
+        participation.completeStep(step.getId());
+        participation.setCurrentStepNumber(participation.getCurrentStepNumber());
+
+        if (step.getStepNumber() == hunt.getSteps().size()) {
+            participation.setCompleted(true);
+            participation.setCompletedAt(LocalDateTime.now());
+        }
+
+        participationRepository.save(participation);
+
+        return true;
+    }
+
+
+
+    private double distanceInMeters(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6371000; // Rayon de la terre
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
 }

@@ -1,15 +1,12 @@
 package com.lootopiaApi.mappers;
 
 import com.lootopiaApi.DTOs.*;
-import com.lootopiaApi.model.entity.Hunt;
-import com.lootopiaApi.model.entity.HuntStep;
-import com.lootopiaApi.model.entity.User;
+import com.lootopiaApi.model.entity.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lootopiaApi.model.entity.MapConfig;
 import com.lootopiaApi.model.enums.HuntLevel;
 
 public class HuntMapper {
@@ -87,7 +84,9 @@ public class HuntMapper {
         return dto;
     }
 
-    public static HuntParticipantDto toParticipantDto(Hunt hunt) {
+    public static HuntParticipantDto toParticipantDto(Participation participation) {
+        Hunt hunt = participation.getHunt();
+
         HuntParticipantDto dto = new HuntParticipantDto();
         dto.setId(hunt.getId());
         dto.setTitle(hunt.getTitle());
@@ -102,12 +101,22 @@ public class HuntMapper {
         dto.setParticipationFee(hunt.getParticipationFee());
         dto.setDigDelaySeconds(hunt.getDigDelaySeconds());
         dto.setOrganizerNickname(hunt.getOrganizer().getUsername());
+        dto.setParticipationId(participation.getId());
 
+        // Add participant progression
+        dto.setCurrentStepNumber(participation.getCurrentStepNumber());
+        dto.setCompletedStepIds(participation.getCompletedStepIds());
+        dto.setCompleted(participation.isCompleted());
+        dto.setJoinedAt(participation.getJoinedAt());
+        dto.setCompletedAt(participation.getCompletedAt());
+
+        // Steps
         List<HuntStepPlayerDto> stepDtos = hunt.getSteps().stream()
                 .map(HuntStepMapper::toPlayerDto)
                 .collect(Collectors.toList());
         dto.setSteps(stepDtos);
 
+        // Maps
         List<MapConfigDto> mapDtos = hunt.getMaps().stream()
                 .map(MapMapper::toDto)
                 .collect(Collectors.toList());
@@ -115,4 +124,5 @@ public class HuntMapper {
 
         return dto;
     }
+
 }
