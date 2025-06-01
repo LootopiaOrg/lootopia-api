@@ -1,8 +1,6 @@
 package com.lootopiaApi.controller;
 
-import com.lootopiaApi.DTOs.HuntDto;
-import com.lootopiaApi.DTOs.HuntParticipantDto;
-import com.lootopiaApi.DTOs.HuntPlayerDto;
+import com.lootopiaApi.DTOs.*;
 import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.User;
@@ -74,10 +72,21 @@ public class UserHuntController {
     public ResponseEntity<List<HuntParticipantDto>> getMyParticipatedHunts() {
         User user = userService.getAuthenticatedUser();
         List<Participation> participations = participationService.getUserParticipations(user.getId());
+
         List<HuntParticipantDto> hunts = participations.stream()
-                .map(Participation::getHunt)
                 .map(HuntMapper::toParticipantDto)
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(hunts);
     }
+
+
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateStep(@RequestBody StepValidationRequest request) {
+        boolean success = participationService.validateStep(request);
+        return ResponseEntity.ok("Étape validée !");
+    }
+
+
+
 }

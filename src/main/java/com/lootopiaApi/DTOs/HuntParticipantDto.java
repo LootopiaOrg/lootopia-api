@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class HuntParticipantDto {
@@ -27,4 +28,11 @@ public class HuntParticipantDto {
     private List<HuntStepPlayerDto> steps = new ArrayList<>();
     private List<RewardDto> rewards = new ArrayList<>();
     private List<MapConfigDto> maps = new ArrayList<>();
+    private Long participationId;
+    private int currentStepNumber;
+    private Set<Long> completedStepIds;
+    private boolean completed;
+    private LocalDateTime joinedAt;
+    private LocalDateTime completedAt;
+
 }
