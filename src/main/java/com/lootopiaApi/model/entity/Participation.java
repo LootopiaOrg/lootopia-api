@@ -1,5 +1,6 @@
 package com.lootopiaApi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,10 +22,12 @@ public class Participation extends Audit {
 
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
+    @JsonBackReference
     private User player;
 
     @ManyToOne
     @JoinColumn(name = "hunt_id", nullable = false)
+    @JsonBackReference
     private Hunt hunt;
 
     private LocalDateTime joinedAt = LocalDateTime.now();

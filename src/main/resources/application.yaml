@@ -31,10 +31,10 @@ file:
 
 stripe:
   secret:
-    key: sk_test_
+    key: sk_test_51RSRZO4JtcL5tx0DiDx4kXz8FEmPH7nFy8rvM2WwzaKBobAvmS0YlRY6QNjt12KMUJQOcSICZN1UHQnk7NI5wZtn00DmrJtHPo
   success:
     url: http://localhost:4200/app/market/success
   cancel:
     url: http://localhost:4200/app/market/canceled
   webhook:
-    secret: whsec_
+    secret: whsec_0492f294ef4e7ef839fff5c47bd591d467c394a005f5a39e98ed2a8fc1119675

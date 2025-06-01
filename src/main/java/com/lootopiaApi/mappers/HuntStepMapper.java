@@ -1,6 +1,7 @@
 package com.lootopiaApi.mappers;
 
 import com.lootopiaApi.DTOs.HuntStepDto;
+import com.lootopiaApi.DTOs.HuntStepPlayerDto;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.HuntStep;
 
@@ -27,6 +28,18 @@ public class HuntStepMapper {
         dto.setHint(step.getHint());
         dto.setType(step.getType());
         dto.setValidationKey(step.getValidationKey());
+        dto.setLatitude(step.getLatitude());
+        dto.setLongitude(step.getLongitude());
+        dto.setIllustration(step.getIllustration());
+        return dto;
+    }
+
+    public static HuntStepPlayerDto toPlayerDto(HuntStep step) {
+        HuntStepPlayerDto dto = new HuntStepPlayerDto();
+        dto.setStepNumber(step.getStepNumber());
+        dto.setRiddle(step.getRiddle());
+        dto.setHint(step.getHint());
+        dto.setType(step.getType());
         dto.setLatitude(step.getLatitude());
         dto.setLongitude(step.getLongitude());
         dto.setIllustration(step.getIllustration());
