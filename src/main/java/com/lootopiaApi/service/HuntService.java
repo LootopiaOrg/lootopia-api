@@ -2,6 +2,7 @@ package com.lootopiaApi.service;
 
 import com.lootopiaApi.DTOs.HuntDto;
 import com.lootopiaApi.model.entity.Hunt;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,5 +19,8 @@ public interface HuntService {
 
     Page<Hunt> findAllPublicAvailable(Pageable pageable);
 
+    Hunt updateHunt(Long id,HuntDto dto) throws AccessDeniedException;
 
+    @Transactional
+    void deleteHunt(Long huntId);
 }

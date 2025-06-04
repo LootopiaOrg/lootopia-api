@@ -11,11 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/partners/hunts")
-@PreAuthorize("hasRole('PARTNER')")
+@PreAuthorize("hasRole('PARTNER') or hasRole('ADMIN')")
 public class PartnerHuntController {
 
     private final HuntService huntService;
@@ -44,6 +43,18 @@ public class PartnerHuntController {
         Hunt hunt = huntService.findById(id);
         HuntDto dto = HuntMapper.toDto(hunt);
         return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HuntDto> updateHunt(@PathVariable Long id, @RequestBody HuntDto dto) throws AccessDeniedException {
+        Hunt updatedHunt = huntService.updateHunt(id, dto);
+        return ResponseEntity.ok(HuntMapper.toDto(updatedHunt));
+    }
+
+    @DeleteMapping("/{huntId}")
+    public ResponseEntity<Void> deleteHunt(@PathVariable Long huntId) {
+        huntService.deleteHunt(huntId);
+        return ResponseEntity.noContent().build();
     }
 
 }
