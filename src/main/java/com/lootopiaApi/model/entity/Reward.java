@@ -1,5 +1,6 @@
 package com.lootopiaApi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,5 +24,6 @@ public class Reward {
 
     @ManyToOne
     @JoinColumn(name = "hunt_id")
+    @JsonBackReference
     private Hunt hunt;
 }

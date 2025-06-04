@@ -35,6 +35,12 @@ public class HuntMapper {
                 .map(mapDto -> MapMapper.toEntity(mapDto, hunt))
                 .collect(Collectors.toList());
         hunt.setMaps(mapEntities);
+
+        List<Reward> rewards = dto.getRewards().stream()
+                .map(rewardDto -> RewardMapper.toEntity(rewardDto, hunt))
+                .collect(Collectors.toList());
+        hunt.setRewards(rewards);
+
         return hunt;
     }
 
@@ -81,6 +87,18 @@ public class HuntMapper {
         dto.setParticipationFee(hunt.getParticipationFee());
         dto.setDigDelaySeconds(hunt.getDigDelaySeconds());
         dto.setOrganizerNickname(hunt.getOrganizer().getUsername());
+
+        List<Reward> rewards = hunt.getRewards();
+        if (rewards != null && !rewards.isEmpty()) {
+            Reward firstReward = rewards.get(0);
+            if ("couronne".equalsIgnoreCase(firstReward.getType())) {
+                dto.setReward(firstReward.getValue() + " couronnes");
+            } else {
+                dto.setReward("Récompense externe");
+            }
+        } else {
+            dto.setReward("Aucune récompense");
+        }
         return dto;
     }
 

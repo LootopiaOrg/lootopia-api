@@ -33,8 +33,8 @@ public class Hunt extends Audit {
     @Enumerated(EnumType.STRING)
     private HuntLevel level;
 
-    private String mode; // "réel" ou "cartographique"
-    private String accessMode; // "public" ou "private"
+    private String mode;
+    private String accessMode;
     private Boolean chatEnabled;
     private Integer maxParticipants;
     private Integer participationFee;
@@ -52,6 +52,7 @@ public class Hunt extends Audit {
     private List<HuntStep> steps = new ArrayList<>();
 
     @OneToMany(mappedBy = "hunt", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Reward> rewards = new ArrayList<>();
 
     @OneToMany(mappedBy = "hunt", cascade = CascadeType.ALL, orphanRemoval = true)
