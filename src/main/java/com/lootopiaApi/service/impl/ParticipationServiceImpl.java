@@ -87,7 +87,7 @@ public class ParticipationServiceImpl implements ParticipationService {
         Participation participation = new Participation();
         participation.setPlayer(user);
         participation.setHunt(hunt);
-        participation.setCurrentStepNumber(0);
+        participation.setCurrentStepNumber(1);
         participation.setCompleted(false);
 
         return participationRepository.save(participation);
@@ -131,7 +131,7 @@ public class ParticipationServiceImpl implements ParticipationService {
                         step.getLatitude(), step.getLongitude(),
                         request.getLatitude(), request.getLongitude()
                 );
-                yield distance < 20.0;
+                yield distance < 100.0;
             }
             default -> {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Type d'étape inconnu");

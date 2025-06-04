@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -82,11 +83,10 @@ public class UserHuntController {
 
 
     @PostMapping("/validate")
-    public ResponseEntity<String> validateStep(@RequestBody StepValidationRequest request) {
+    public ResponseEntity<Map<String, String>> validateStep(@RequestBody StepValidationRequest request) {
         boolean success = participationService.validateStep(request);
-        return ResponseEntity.ok("Étape validée !");
+        return ResponseEntity.ok(Map.of("message", "Étape validée !"));
+
     }
-
-
 
 }
