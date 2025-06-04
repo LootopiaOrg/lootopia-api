@@ -1,5 +1,6 @@
 package com.lootopiaApi.repository;
 
+import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.Participation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
@@ -10,4 +11,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     Optional<Participation> findByPlayerIdAndHuntId(Long playerId, Long huntId);
     List<Participation> findAllByPlayerId(Long playerId);
     long countByHuntId(Long huntId);
+    void deleteAllByHunt(Hunt hunt);
 }

@@ -1,12 +1,19 @@
 package com.lootopiaApi.config;
 
 import com.lootopiaApi.model.entity.Offer;
+import com.lootopiaApi.model.entity.Role;
+import com.lootopiaApi.model.entity.User;
+import com.lootopiaApi.model.enums.ERole;
 import com.lootopiaApi.repository.OfferRepository;
+import com.lootopiaApi.repository.RoleRepository;
+import com.lootopiaApi.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -27,6 +34,34 @@ public class DataInitializer {
                     Offer.builder().crowns(5000).price(59.99).description("Le pack des légendes").stripePriceId("price_1RSSRA4JtcL5tx0DmfZu5akt").active(true).build()
             ));
             log.info("Offers initialized");
+        };
+    }
+
+    @Bean
+    CommandLineRunner initAdmin(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String adminUsername = "admin";
+            String adminPassword = "admin123";
+
+            Role adminRole = roleRepository.findByRole(ERole.ADMIN)
+                    .orElseGet(() -> {
+                        Role newRole = new Role();
+                        newRole.setRole(ERole.ADMIN);
+                        return roleRepository.save(newRole);
+                    });
+
+            if (userRepository.findByUsername(adminUsername).isEmpty()) {
+                User admin = new User();
+                admin.setUsername(adminUsername);
+                admin.setPassword(passwordEncoder.encode(adminPassword));
+                admin.setFirstName("Admin");
+                admin.setLastName("Lootopia");
+                admin.setActive(true);
+                admin.setAccountVerified(true);
+                admin.setRoles(Collections.singleton(adminRole));
+                userRepository.save(admin);
+                log.info("Admin user created: {} / {}", adminUsername, adminPassword);
+            }
         };
     }
 }

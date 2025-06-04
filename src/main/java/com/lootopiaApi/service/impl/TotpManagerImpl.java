@@ -30,8 +30,8 @@ public class TotpManagerImpl implements TotpManager {
 
     @Override
     public String getQRCode(String secret) throws QrGenerationException {
-        QrData qrData = new QrData.Builder().label("2FA Server")
-                .issuer("Youtube 2FA Demo")
+        QrData qrData = new QrData.Builder().label("LOOTOPIA Server")
+                .issuer("LOOTOPIA")
                 .secret(secret)
                 .digits(6)
                 .period(60)

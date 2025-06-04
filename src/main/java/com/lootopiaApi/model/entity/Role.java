@@ -3,6 +3,9 @@ package com.lootopiaApi.model.entity;
 import com.lootopiaApi.model.enums.ERole;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +22,8 @@ public class Role {
     @Column(length = 20, unique = true)
     private ERole role;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<User> users = new HashSet<>();
 }
