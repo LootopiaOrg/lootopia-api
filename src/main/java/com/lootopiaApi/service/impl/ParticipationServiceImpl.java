@@ -3,6 +3,8 @@ package com.lootopiaApi.service.impl;
 import com.lootopiaApi.DTOs.StepValidationRequest;
 import com.lootopiaApi.model.entity.*;
 import com.lootopiaApi.repository.UserBalanceRepository;
+import com.lootopiaApi.service.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.lootopiaApi.repository.HuntRepository;
@@ -23,16 +25,18 @@ public class ParticipationServiceImpl implements ParticipationService {
     private final HuntRepository huntRepository;
     private final UserRepository userRepository;
     private final UserBalanceRepository userBalanceRepository;
+    private final EmailService emailService;
 
     public ParticipationServiceImpl(
             ParticipationRepository participationRepository,
             HuntRepository huntRepository,
-            UserRepository userRepository, UserBalanceRepository userBalanceRepository
+            UserRepository userRepository, UserBalanceRepository userBalanceRepository, EmailService emailService
     ) {
         this.participationRepository = participationRepository;
         this.huntRepository = huntRepository;
         this.userRepository = userRepository;
         this.userBalanceRepository = userBalanceRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -146,9 +150,39 @@ public class ParticipationServiceImpl implements ParticipationService {
         participation.completeStep(step.getId());
         participation.setCurrentStepNumber(participation.getCurrentStepNumber());
 
-        if (step.getStepNumber() == hunt.getSteps().size()) {
+        boolean huntCompleted = step.getStepNumber() == hunt.getSteps().size();
+
+        if (huntCompleted) {
             participation.setCompleted(true);
             participation.setCompletedAt(LocalDateTime.now());
+
+            // Distribuer les récompenses
+            List<Reward> rewards = hunt.getRewards();  // Assurez-vous que Hunt a getRewards()
+
+            for (Reward reward : rewards) {
+                if ("couronne".equalsIgnoreCase(reward.getType())) {
+                    User user = participation.getPlayer();
+                    Optional<UserBalance> userBalanceOpt = userBalanceRepository.findByUserId(user.getId());
+
+                    UserBalance userBalance = userBalanceOpt.orElseThrow(() ->
+                            new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Le solde utilisateur est introuvable.")
+                    );
+                    int currentBalance = userBalance.getCrowns();
+                    userBalance.setCrowns(currentBalance + reward.getValue());
+                    userBalanceRepository.save(userBalance);
+                } else {
+                    // Envoi d’un email avec les détails de la récompense
+                    User user = participation.getPlayer();
+                    String content = "Félicitations ! Vous avez remporté : " +
+                            (reward.getName() != null ? reward.getName() : reward.getValue());
+
+                    try {
+                        emailService.sendRewardEmail(user, reward.getName());
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         }
 
         participationRepository.save(participation);

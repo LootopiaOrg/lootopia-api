@@ -20,4 +20,5 @@ public class HuntPlayerDto {
     private Integer participationFee;
     private Integer digDelaySeconds;
     private String organizerNickname;
+    private String reward;
 }
