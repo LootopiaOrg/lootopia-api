@@ -5,6 +5,8 @@ import com.lootopiaApi.model.entity.*;
 import com.lootopiaApi.repository.UserBalanceRepository;
 import com.lootopiaApi.service.EmailService;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.lootopiaApi.repository.HuntRepository;
@@ -201,6 +203,12 @@ public class ParticipationServiceImpl implements ParticipationService {
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+
+    @Override
+    public List<Participation> findAchievedByUser(Long userId) {
+        return participationRepository.findByPlayerIdAndCompletedTrue(userId);
     }
 
 }

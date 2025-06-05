@@ -14,9 +14,10 @@ import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface HuntRepository extends JpaRepository<Hunt, Long> {
-    List<Hunt> findByOrganizer_Id(Long id);
+    Page<Hunt> findByOrganizer_Id(Long id, Pageable pageable);
     Page<Hunt> findByAccessModeAndEndDateAfter(String accessMode, LocalDateTime now, Pageable pageable);
     @Modifying
     @Query("UPDATE Hunt h SET h.organizer.id = NULL WHERE h.organizer.id IN :ids")
     void clearOrganizerReferences(@Param("ids") List<Long> ids);
+
 }

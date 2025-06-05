@@ -1,5 +1,6 @@
 package com.lootopiaApi.service;
 
+import com.lootopiaApi.DTOs.UserRegisterRequest;
 import com.lootopiaApi.DTOs.UserUpdateDTO;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.UserAlreadyExistException;
@@ -13,7 +14,7 @@ import java.nio.file.AccessDeniedException;
 
 public interface UserService {
 
-    MfaTokenData registerUser(User user) throws UserAlreadyExistException, QrGenerationException;
+    MfaTokenData registerUser(UserRegisterRequest user) throws UserAlreadyExistException, QrGenerationException;
     //MfaTokenData mfaSetup(String email) throws UnkownIdentifierException, QrGenerationException;
     boolean verifyTotp(final String code,String username);
 

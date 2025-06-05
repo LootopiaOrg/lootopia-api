@@ -4,6 +4,7 @@ import com.lootopiaApi.DTOs.HuntDto;
 import com.lootopiaApi.mappers.HuntMapper;
 import com.lootopiaApi.model.entity.Hunt;
 import com.lootopiaApi.model.entity.HuntStep;
+import com.lootopiaApi.model.entity.Participation;
 import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.model.enums.ERole;
 import com.lootopiaApi.repository.HuntRepository;
@@ -44,9 +45,9 @@ public class HuntServiceImpl implements HuntService {
     }
 
     @Override
-    public List<Hunt> findByPartnerId() {
+    public Page<Hunt> findByPartnerId(Pageable pageable) {
         User user = this.userService.getAuthenticatedUser();
-        return this.huntRepository.findByOrganizer_Id(user.getId());
+        return this.huntRepository.findByOrganizer_Id(user.getId(), pageable);
     }
 
     @Override
@@ -118,4 +119,5 @@ public class HuntServiceImpl implements HuntService {
 
         huntRepository.delete(hunt);
     }
+
 }
