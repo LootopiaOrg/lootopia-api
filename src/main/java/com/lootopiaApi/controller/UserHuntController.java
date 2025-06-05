@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.lootopiaApi.model.entity.Participation;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,8 @@ public class UserHuntController {
         Page<HuntPlayerDto> dtos = hunts.map(HuntMapper::toPlayerDto);
         return ResponseEntity.ok(dtos);
     }
+
+
 
     // GET hunt by ID
     @GetMapping("/{id}")
@@ -88,5 +91,17 @@ public class UserHuntController {
         return ResponseEntity.ok(Map.of("message", "Étape validée !"));
 
     }
+
+        @GetMapping("/achieved")
+    public ResponseEntity<List<HuntParticipantDto>> getAchievedHunts(
+            @AuthenticationPrincipal User currentUser
+    ) {
+        List<Participation> participations = participationService.findAchievedByUser(currentUser.getId());
+        List<HuntParticipantDto> hunts = participations.stream()
+                .map(HuntMapper::toParticipantDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(hunts);
+    }
+
 
 }

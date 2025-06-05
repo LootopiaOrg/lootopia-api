@@ -33,7 +33,7 @@ public class PartnerHuntController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<Hunt> huntPage = huntService.findAll(PageRequest.of(page, size));
+        Page<Hunt> huntPage = huntService.findByPartnerId(PageRequest.of(page, size));
         Page<HuntDto> dtoPage = huntPage.map(HuntMapper::toDto);
         return ResponseEntity.ok(dtoPage);
     }

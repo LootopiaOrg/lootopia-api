@@ -2,6 +2,7 @@ package com.lootopiaApi.service.impl;
 
 import com.lootopiaApi.DTOs.ApiResponse;
 import com.lootopiaApi.DTOs.MfaTokenData;
+import com.lootopiaApi.DTOs.UserRegisterRequest;
 import com.lootopiaApi.DTOs.UserUpdateDTO;
 import com.lootopiaApi.exception.InvalidTokenException;
 import com.lootopiaApi.exception.MFAServerAppException;
@@ -30,7 +31,9 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.Charset;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -61,39 +64,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MfaTokenData registerUser(User user) throws UserAlreadyExistException, QrGenerationException {
-        // Vérifiez d'abord si l'utilisateur existe déjà
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+    public MfaTokenData registerUser(UserRegisterRequest request)
+            throws UserAlreadyExistException, QrGenerationException {
+
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username already exists");
         }
 
-        // Ensuite, essayez d'enregistrer l'utilisateur
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            // Map DTO to Entity
+            User user = new User();
+            user.setUsername(request.getUsername());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
+            user.setBio(request.getBio());
+            user.setActive(true);
+            user.setAccountVerified(false);
+            user.setMfaEnabled(false);
             user.setSecretKey(totpManager.generateSecretKey());
 
-            if (user.getRoles().isEmpty()) {
-                Role defaultRole = roleRepository.findByRole(ERole.USER)
-                        .orElseThrow(() -> new RuntimeException("Error: Role USER is not found."));
-                user.getRoles().add(defaultRole);
-            }
+            // Assign default roles
+            Set<Role> roles = new HashSet<>();
+            Role defaultRole = roleRepository.findByRole(ERole.USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role USER is not found."));
+            roles.add(defaultRole);
 
+            if (request.isPartner()) {
+                Role partnerRole = roleRepository.findByRole(ERole.PARTNER)
+                        .orElseThrow(() -> new RuntimeException("Error: Role PARTNER is not found."));
+                roles.add(partnerRole);
+            }
+            user.setRoles(roles);
+
+            // Save user
             User savedUser = userRepository.save(user);
-            if (!savedUser.getRoles().contains(ERole.ADMIN)) {
+
+            // Create balance if not ADMIN
+            if (!user.getRoles().stream().anyMatch(role -> role.getRole().equals(ERole.ADMIN))) {
                 this.userBalanceService.createBalanceFor(savedUser.getId());
             }
 
-            this.sendRegistrationConfirmationEmail(user);
+            // Send confirmation email
+            this.sendRegistrationConfirmationEmail(savedUser);
+
+            // Generate QR Code
             String qrCode = totpManager.getQRCode(savedUser.getSecretKey());
+
             return MfaTokenData.builder()
                     .mfaCode(savedUser.getSecretKey())
                     .qrCode(qrCode)
                     .build();
+
         } catch (QrGenerationException e) {
-            System.out.println("QR generation failed for user: " + user.getUsername()+ e);
-            throw e; // Relancez QrGenerationException sans l'encapsuler
+            System.out.println("QR generation failed for user: " + request.getUsername() + e);
+            throw e;
         } catch (Exception e) {
-            System.out.println("Unexpected error during registration for user: "+ user.getUsername()+ e);
+            System.out.println("Unexpected error during registration for user: " + request.getUsername() + e);
             throw new MFAServerAppException("Exception while registering the user", e);
         }
     }
