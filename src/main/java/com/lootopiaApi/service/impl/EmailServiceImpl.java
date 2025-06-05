@@ -1,6 +1,7 @@
 package com.lootopiaApi.service.impl;
 
 import com.lootopiaApi.model.entity.EmailConfirmationToken;
+import com.lootopiaApi.model.entity.User;
 import com.lootopiaApi.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -61,6 +62,27 @@ public class EmailServiceImpl implements EmailService {
         sender.send(message);
     }
 
+    @Override
+    public void sendRewardEmail(User user, String rewardContent) throws MessagingException {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(user.getUsername());
+        helper.setSubject("🎁 Récompense de chasse au trésor");
+
+        String htmlContent = "<html>" +
+                "<body>" +
+                "<h2>Félicitations " + user.getFirstName() + " !</h2>" +
+                "<p>Vous avez terminé la chasse au trésor avec succès.</p>" +
+                "<p>Votre récompense : <strong>" + rewardContent + "</strong></p>" +
+                "<br/><p>Merci de votre participation !</p>" +
+                "<p>L'équipe Lootopia</p>" +
+                "</body>" +
+                "</html>";
+
+        helper.setText(htmlContent, true);
+        sender.send(message);
+    }
 
     private String generateConfirmationLink(String token){
         return "<a href=http://localhost:8080/confirm-email?token="+token+">Confirm Email</a>";
