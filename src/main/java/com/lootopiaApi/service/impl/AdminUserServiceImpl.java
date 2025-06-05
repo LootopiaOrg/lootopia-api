@@ -40,4 +40,12 @@ public class AdminUserServiceImpl implements AdminUserService {
                 user.getBio()
         ));
     }
+
+    @Override
+    public void deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);
+        userRepository.save(user);
+    }
 }

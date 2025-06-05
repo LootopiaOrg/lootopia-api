@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "(LOWER(u.username) LIKE %:query% OR LOWER(u.firstName) LIKE %:query% OR LOWER(u.lastName) LIKE %:query%) " +
             "AND r.role = :role")
     Page<User> findByQueryAndRole(@Param("query") String query, @Param("role") com.lootopiaApi.model.enums.ERole role, Pageable pageable);
+
+    List<User> findByActiveFalseAndUpdatedAtBefore(LocalDateTime dateTime);
+
 }
