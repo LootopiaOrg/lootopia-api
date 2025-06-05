@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
             user.setBio(request.getBio());
             user.setActive(true);
             user.setAccountVerified(false);
-            user.setMfaEnabled(false);
+            user.setMfaEnabled(request.isMfaEnabled());
             user.setSecretKey(totpManager.generateSecretKey());
 
             // Assign default roles
