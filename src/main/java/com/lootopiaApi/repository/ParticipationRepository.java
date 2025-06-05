@@ -12,4 +12,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     List<Participation> findAllByPlayerId(Long playerId);
     long countByHuntId(Long huntId);
     void deleteAllByHunt(Hunt hunt);
+    void deleteByPlayerIdIn(List<Long> userIds);
 }

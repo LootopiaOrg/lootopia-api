@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -49,5 +46,11 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         Page<UserDto> result = adminUserService.searchUsers(query, role, pageable);
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/users/{id}/deactivate")
+    public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
+        adminUserService.deactivateUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
