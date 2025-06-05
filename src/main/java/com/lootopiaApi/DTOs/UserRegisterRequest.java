@@ -18,5 +18,6 @@ public class UserRegisterRequest {
     private String lastName;
     private String bio;
     private boolean partner;
+    private boolean mfaEnabled;
 }
 
