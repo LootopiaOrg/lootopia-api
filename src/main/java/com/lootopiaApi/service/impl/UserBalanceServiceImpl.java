@@ -48,6 +48,6 @@ public class UserBalanceServiceImpl implements UserBalanceService {
 
     @Override
     public int getCrowns(Long userId) {
-        return userBalanceRepository.findById(userId).get().getCrowns();
+        return userBalanceRepository.findByUserId(userId).get().getCrowns();
     }
 }
