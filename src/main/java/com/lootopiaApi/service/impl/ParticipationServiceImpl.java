@@ -122,6 +122,20 @@ public class ParticipationServiceImpl implements ParticipationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce n'est pas l'étape attendue");
         }
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime lastAttempt = participation.getLastAttemptAt();
+
+        if (lastAttempt != null) {
+            int delaySeconds = hunt.getDigDelaySeconds();
+            LocalDateTime nextAllowedTime = lastAttempt.plusSeconds(delaySeconds);
+
+            if (now.isBefore(nextAllowedTime)) {
+                long secondsToWait = java.time.Duration.between(now, nextAllowedTime).getSeconds();
+                throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS,
+                        "Veuillez patienter encore " + secondsToWait + " secondes avant une nouvelle tentative");
+            }
+        }
+
         boolean isValid = switch (step.getType()) {
             case "enigme" -> {
                 if (request.getAnswer() == null || request.getAnswer().isBlank()) {
@@ -145,6 +159,8 @@ public class ParticipationServiceImpl implements ParticipationService {
         };
 
         if (!isValid) {
+            participation.setLastAttemptAt(LocalDateTime.now());
+            participationRepository.save(participation);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation de l'étape échouée");
         }
 

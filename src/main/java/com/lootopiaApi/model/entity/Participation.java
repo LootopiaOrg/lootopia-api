@@ -36,6 +36,9 @@ public class Participation extends Audit {
 
     private LocalDateTime completedAt;
 
+    @Column(name = "last_attempt_at")
+    private LocalDateTime lastAttemptAt;
+
     @ElementCollection
     @CollectionTable(name = "participation_completed_steps", joinColumns = @JoinColumn(name = "participation_id"))
     @Column(name = "step_id")

@@ -87,9 +87,14 @@ public class UserHuntController {
 
     @PostMapping("/validate")
     public ResponseEntity<Map<String, String>> validateStep(@RequestBody StepValidationRequest request) {
-        boolean success = participationService.validateStep(request);
-        return ResponseEntity.ok(Map.of("message", "Étape validée !"));
-
+        try {
+            boolean success = participationService.validateStep(request);
+            return ResponseEntity.ok(Map.of("message", "Étape validée !"));
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity
+                    .status(ex.getStatusCode())
+                    .body(Map.of("message", ex.getReason()));
+        }
     }
 
         @GetMapping("/achieved")
