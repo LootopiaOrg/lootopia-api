@@ -19,15 +19,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public Page<UserDto> searchUsers(String query, String role, Pageable pageable) {
+    public Page<UserDto> searchUsers(String query, String role, Boolean isActive, Pageable pageable) {
         Page<User> users;
 
-        if (query != null && role != null) {
+        if (query != null && role != null && isActive != null) {
             users = userRepository.findByQueryAndRole(query.toLowerCase(), ERole.valueOf(role.toUpperCase()), pageable);
-        } else if (query != null) {
+        } else if (query != null && isActive != null) {
             users = userRepository.findByQuery(query.toLowerCase(), pageable);
-        } else if (role != null) {
+        } else if (role != null && isActive != null) {
             users = userRepository.findByRole(ERole.valueOf(role.toUpperCase()), pageable);
+        } else if (isActive != null) {
+            users = userRepository.findByActive(isActive, pageable);
         } else {
             users = userRepository.findAll(pageable);
         }

@@ -29,6 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "AND r.role = :role")
     Page<User> findByQueryAndRole(@Param("query") String query, @Param("role") com.lootopiaApi.model.enums.ERole role, Pageable pageable);
 
+    Page<User> findByActive(Boolean isActive, Pageable pageable);
+
     List<User> findByActiveFalseAndUpdatedAtBefore(LocalDateTime dateTime);
 
 }

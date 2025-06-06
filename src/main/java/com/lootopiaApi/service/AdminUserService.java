@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface AdminUserService {
 
-    Page<UserDto> searchUsers(String query, String role, Pageable pageable);
+    Page<UserDto> searchUsers(String query, String role, Boolean isActive, Pageable pageable);
 
     void deactivateUser(Long id);
 }
