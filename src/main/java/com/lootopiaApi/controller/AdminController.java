@@ -41,10 +41,11 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String query,
-            @RequestParam(required = false) String role
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Boolean isActive
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserDto> result = adminUserService.searchUsers(query, role, pageable);
+        Page<UserDto> result = adminUserService.searchUsers(query, role, isActive, pageable);
         return ResponseEntity.ok(result);
     }
 
